@@ -81,6 +81,28 @@ jobs:
     #     ./location_of_script_within_repo/buildscript.sh
 
     - name: Perform CodeQL Analysis
+      id: generate-sarif
       uses: github/codeql-action/analyze@v2
       with:
         category: "/language:${{matrix.language}}"
+        upload: failure-only
+    - name: Process SARIF
+      run: |
+        set -x
+        ls -la ../results
+        ls -la ./results
+        exit 0
+      # jq 'setpath(path(.runs[].tool.driver.name); "Jenkins Security Scan") | setpath(path(.runs[].tool.driver.organization); "Jenkins Project") | del(.runs[].results[] | select( .suppressions | length != 0 ))' jenkins-security-scan-raw.sarif > jenkins-security-scan.sarif
+      
+    # - name: Archive SARIF
+    #   uses: actions/upload-artifact@v3
+    #   with:
+    #     path: |
+    #       codeql.sarif
+    #       codeql.sarif
+    #     name: CodeQL SARIF
+    # - name: Upload SARIF
+    #   uses: github/codeql-action/upload-sarif@v2
+    #   with:
+    #     sarif_file: codeql.sarif
+    #     category: CodeQL
