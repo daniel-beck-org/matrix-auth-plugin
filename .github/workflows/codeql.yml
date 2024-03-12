@@ -51,7 +51,7 @@ jobs:
 
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
-      uses: github/codeql-action/init@v2
+      uses: github/codeql-action/init@v3
       with:
         languages: ${{ matrix.language }}
         config: |
@@ -68,7 +68,7 @@ jobs:
     # Autobuild attempts to build any compiled languages (C/C++, C#, Go, Java, or Swift).
     # If this step fails, then you should remove it and run the build manually (see below)
     - name: Autobuild
-      uses: github/codeql-action/autobuild@v2
+      uses: github/codeql-action/autobuild@v3
 
     # ℹ️ Command-line programs to run using the OS shell.
     # 📚 See https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsrun
@@ -82,7 +82,7 @@ jobs:
 
     - name: Perform CodeQL Analysis
       id: generate-sarif
-      uses: github/codeql-action/analyze@v2
+      uses: github/codeql-action/analyze@v3
       with:
         category: "/language:${{matrix.language}}"
         upload: failure-only
@@ -91,13 +91,13 @@ jobs:
         jq 'setpath(path(.runs[].tool.driver.name); "Jenkins Security Scan") | setpath(path(.runs[].tool.driver.organization); "Jenkins Project") | del(.runs[].results[] | select( .suppressions | length != 0 ))' ../results/*.sarif > jenkins-security-scan.sarif
       
     - name: Archive SARIF
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         path: |
           jenkins-security-scan.sarif
         name: Jenkins Security Scan ${{matrix.language}} SARIF
     - name: Upload SARIF
-      uses: github/codeql-action/upload-sarif@v2
+      uses: github/codeql-action/upload-sarif@v3
       with:
         sarif_file: jenkins-security-scan.sarif
         category: "/language:${{matrix.language}}"
