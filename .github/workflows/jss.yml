@@ -15,3 +15,5 @@ permissions:
 jobs:
   security-scan:
     uses: jenkins-infra/jenkins-security-scan/.github/workflows/jenkins-security-scan.yaml@optional-java
+    with:
+      java-version: 11
